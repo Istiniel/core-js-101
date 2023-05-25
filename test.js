@@ -1,25 +1,18 @@
-function group(array, keySelector, valueSelector) {
-  const result = array.reduce((acc, el) => {
-    const values = acc.get(keySelector(el));
-    const newValue = valueSelector(el);
-    return acc.set(
-      keySelector(el),
-      values ? [...values, newValue] : [valueSelector(el)]
-    );
-  }, new Map());
+function angleBetweenClockHands(timestamp) {
+  const date = new Date(timestamp - 3600 * 1000 * 3);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const minutesDeg = (minutes * 360) / 60;
+  const hoursDeg = ((hours % 12) * 360) / 12 + (minutes * 30) / 60;
 
-  return JSON.stringify(Array.from(result.entries()));
+  let result = Math.abs(hoursDeg - minutesDeg);
+
+  if (result > 180) {
+    result = 360 - result;
+  }
+
+  return (result * Math.PI) / 180;
 }
-console.log(
-  group(
-    [
-      { country: 'Belarus', city: 'Brest' },
-      { country: 'Russia', city: 'Omsk' },
-      { country: 'Russia', city: 'Samara' },
-      { country: 'Belarus', city: 'Grodno' },
-      { country: 'Belarus', city: 'Minsk' },
-    ],
-    (item) => item.country,
-    (item) => item.city
-  )
-);
+
+console.log(angleBetweenClockHands(Date.UTC(2016, 3, 5, 15, 0)));
+// console.log(new Date(Date.UTC(2016, 3, 5, 9, 0)));
