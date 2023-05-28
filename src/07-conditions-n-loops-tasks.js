@@ -294,15 +294,14 @@ function isCreditCardNumber(ccn) {
     .filter((_, ind) => ind % 2 === 0)
     .reduce((acc, el) => acc + +el, 0);
 
-  const sum =
-    String(ccn)
-      .split('')
-      .reverse('')
-      .slice(1)
-      .filter((_, ind) => ind % 2 === 0)
-      .map((el) => String(el * 2).split(''))
-      .flat(Infinity)
-      .reduce((acc, el) => acc + +el, 0) + nonTwicedNums;
+  const sum = String(ccn)
+    .split('')
+    .reverse('')
+    .slice(1)
+    .filter((_, ind) => ind % 2 === 0)
+    .map((el) => String(el * 2).split(''))
+    .flat(Infinity)
+    .reduce((acc, el) => acc + +el, 0) + nonTwicedNums;
   return sum % 10 === 0;
 }
 
