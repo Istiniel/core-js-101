@@ -321,7 +321,9 @@ function isCreditCardNumber(ccn) {
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
 function getDigitalRoot(num) {
-  let sum = (num * (num + 1)) / 2;
+  let sum = String(num)
+    .split('')
+    .reduce((acc, a) => acc + +a, 0);
   while (sum >= 10) {
     sum = String(sum)
       .split('')
@@ -351,8 +353,28 @@ function getDigitalRoot(num) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const startClosures = '[({<';
+  const endClosures = '])}>';
+  const closures = [];
+  let result = true;
+  str.split('').forEach((closure) => {
+    const startIndex = startClosures.indexOf(closure);
+    if (startIndex !== -1) {
+      closures.push(endClosures[startIndex]);
+
+      return;
+    }
+
+    const index = endClosures.indexOf(closure);
+    const endClosureIndex = endClosures.indexOf(closures.pop());
+
+    if (endClosureIndex !== index) {
+      result = false;
+    }
+  });
+
+  return result && closures.length === 0;
 }
 
 /**
@@ -375,8 +397,8 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
 }
 
 /**
@@ -391,8 +413,29 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  let result = '';
+  const longestPath = pathes.sort(
+    (a, b) => b.match(/^.+\/?/)[0].length - a.match(/^.+\/?/)[0].length,
+  )[0];
+
+  const firstPath = longestPath.split('/');
+  firstPath.pop();
+
+  while (firstPath.length > 0) {
+    let commonDir = firstPath.join('/');
+    if (firstPath.length === 1 && firstPath[0].length === 0) {
+      commonDir = '/';
+    }
+    if (pathes.every((path) => path.startsWith(commonDir))) {
+      result = commonDir;
+      break;
+    }
+
+    firstPath.pop();
+  }
+
+  return result.length > 1 ? `${result}/` : result;
 }
 
 /**
@@ -413,8 +456,22 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const result = [];
+  for (let i = 0; i < m2[0].length; i += 1) {
+    const sub = [];
+    for (let k = 0; k < m2[i].length; k += 1) {
+      let n = 0;
+      for (let j = 0; j < m1[0].length; j += 1) {
+        n += m1[i][j] * m2[j][k];
+      }
+      sub.push(n);
+    }
+
+    result.push(sub);
+  }
+
+  return result;
 }
 
 /**
@@ -447,8 +504,34 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const positionMap = new Map();
+  let result;
+  const winPositions = [
+    ['0-0', '0-1', '0-2'],
+    ['1-0', '1-1', '1-2'],
+    ['2-0', '2-1', '2-2'],
+    ['0-0', '1-0', '2-0'],
+    ['0-1', '1-1', '2-1'],
+    ['0-2', '1-2', '2-2'],
+    ['0-0', '1-1', '2-2'],
+    ['0-2', '1-1', '2-0'],
+  ];
+
+  for (let i = 0; i < position.length; i += 1) {
+    for (let j = 0; j < position[i].length; j += 1) {
+      positionMap.set(`${i}-${j}`, position[i][j]);
+    }
+  }
+
+  winPositions.forEach((positionArr) => {
+    const winCase = positionArr.map((el) => positionMap.get(el));
+    if (winCase.every((el) => el === winCase[0])) {
+      [result] = winCase;
+    }
+  });
+
+  return result;
 }
 
 module.exports = {
