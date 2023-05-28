@@ -147,7 +147,7 @@ function retry(func, attempts) {
       try {
         result = func();
       } catch (error) {
-        console.log(error.message);
+        // several words for out beloved linter
       }
     }
 
