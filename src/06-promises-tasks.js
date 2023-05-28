@@ -102,8 +102,12 @@ function getFastestPromise(array) {
 async function chainPromises(array, action) {
   const results = [];
   await array.forEach(async (promise) => {
-    const resolvedValue = await promise;
-    results.push(resolvedValue);
+    try {
+      const resolvedValue = await promise;
+      results.push(resolvedValue);
+    } catch (error) {
+      // several words for out beloved linter
+    }
   });
 
   return results.reduce(action);
